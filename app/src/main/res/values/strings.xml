@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GongJiao</string>
+    <string name="progress_dialog">正在加载</string>
+    <string name="please_wait">请稍后......</string>
+</resources>
