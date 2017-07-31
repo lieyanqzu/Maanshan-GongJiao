@@ -15,42 +15,64 @@ public class BusTimeInfoNet {
         return getInfo(xl, sxx, "/GetNextBusTime");
     }
 
-    private static String getInfo(String xl, String sxx, String address) {
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = new FormBody.Builder()
-                .add("xl", xl)
-                .add("sxx", sxx)
-                .build();
-        Request request = new Request.Builder()
-                .url(Global.getSocAddress() + address)
-                .put(requestBody)
-                .build();
+    private static String getInfo(final String xl, final String sxx, final String address) {
+        final StringBuffer buffer = new StringBuffer();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("xl", xl)
+                        .add("sxx", sxx)
+                        .build();
+                Request request = new Request.Builder()
+                        .url(Global.getSocAddress() + address)
+                        .put(requestBody)
+                        .build();
+                try {
+                    buffer.append(client.newCall(request).execute().body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         try {
-            Response response = client.newCall(request).execute();
-            return response.body().string();
-        } catch (IOException e) {
+            thread.start();
+            thread.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "";
+        return buffer.toString();
     }
 
-    private static String getComeTime(String xl, String zd, String sxx) {
-        OkHttpClient client = new OkHttpClient();
-        RequestBody requestBody = new FormBody.Builder()
-                .add("xl", xl)
-                .add("sxx", sxx)
-                .add("zd", zd)
-                .build();
-        Request request = new Request.Builder()
-                .url(Global.getSocAddress() + "/SumComeTime")
-                .put(requestBody)
-                .build();
+    private static String getComeTime(final String xl, final String zd, final String sxx) {
+        final StringBuffer buffer = new StringBuffer();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                OkHttpClient client = new OkHttpClient();
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("xl", xl)
+                        .add("sxx", sxx)
+                        .add("zd", zd)
+                        .build();
+                Request request = new Request.Builder()
+                        .url(Global.getSocAddress() + "/SumComeTime")
+                        .put(requestBody)
+                        .build();
+                try {
+                    buffer.append(client.newCall(request).execute().body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         try {
-            Response response = client.newCall(request).execute();
-            return response.body().string();
-        } catch (IOException e) {
+            thread.start();
+            thread.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return "";
+        return buffer.toString();
     }
 }
