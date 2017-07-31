@@ -109,7 +109,6 @@ public class LineActivity extends AppCompatActivity {
                 initInfo();
                 adapter = new StationAdapter(lineCode, sxx);
                 lineStationList.setAdapter(adapter);
-                DialogUtil.showProcessDia(LineActivity.this);
             }
         });
         LinearLayoutManager manager = new LinearLayoutManager(this);
