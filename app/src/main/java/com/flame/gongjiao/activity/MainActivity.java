@@ -7,20 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
-import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.flame.gongjiao.R;
 import com.flame.gongjiao.adapter.LineAdapter;
-import com.flame.gongjiao.bean.AndroidDataBean;
-import com.flame.gongjiao.bean.LineBean;
-import com.flame.gongjiao.bean.StationBean;
-import com.flame.gongjiao.bean.VersionBean;
+import com.flame.gongjiao.bean.*;
 import com.flame.gongjiao.net.AndroidDataNet;
 import com.flame.gongjiao.net.LineNet;
-import com.flame.gongjiao.net.StationNet;
 import com.flame.gongjiao.net.VersionNet;
 import com.flame.gongjiao.util.Global;
 import com.flame.gongjiao.util.DialogUtil;
@@ -28,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,25 +62,23 @@ public class MainActivity extends AppCompatActivity {
                     fsv.clearSuggestions();
                 } else {
                     fsv.showProgress();
-
-                    //simulates a query call to a data source
-                    //with a new query.
-                    DataHelper.findSuggestions(getActivity(), newQuery, 5,
-                            FIND_SUGGESTION_SIMULATED_DELAY, new DataHelper.OnFindSuggestionsListener() {
-
-                                @Override
-                                public void onResults(List<ColorSuggestion> results) {
-
-                                    //this will swap the data and
-                                    //render the collapse/expand animations as necessary
-                                    fsv.swapSuggestions(results);
-
-                                    //let the users know that the background
-                                    //process has completed
-                                    fsv.hideProgress();
-                                }
-                            });
+                    fsv.swapSuggestions(getSearchLine(newQuery));
+                    fsv.hideProgress();
                 }
+            }
+        });
+        fsv.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+                LineBean.LineListBean line = (LineBean.LineListBean) searchSuggestion;
+                LineActivity.StartUp(MainActivity.this, fsv, line.getLineName(), line.getLineCode());
+                fsv.clearQuery();
+                fsv.clearSearchFocus();
+            }
+
+            @Override
+            public void onSearchAction(String currentQuery) {
+
             }
         });
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -209,5 +203,15 @@ public class MainActivity extends AppCompatActivity {
         }
         LineAdapter adapter = new LineAdapter();
         lineList.setAdapter(adapter);
+    }
+
+    private List<LineBean.LineListBean> getSearchLine(String key) {
+        List<LineBean.LineListBean> result = new ArrayList<>();
+        for (LineBean.LineListBean line : Global.getLine().getLineList()) {
+            if (line.getLineName().startsWith(key)) {
+                result.add(line);
+            }
+        }
+        return result;
     }
 }

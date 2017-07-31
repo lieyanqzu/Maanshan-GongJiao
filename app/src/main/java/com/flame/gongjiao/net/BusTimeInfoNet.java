@@ -45,7 +45,7 @@ public class BusTimeInfoNet {
         return buffer.toString();
     }
 
-    private static String getComeTime(final String xl, final String zd, final String sxx) {
+    public static String getComeTime(final String xl, final String zd, final String sxx) {
         final StringBuffer buffer = new StringBuffer();
         Thread thread = new Thread(new Runnable() {
             @Override

@@ -1,7 +1,6 @@
 package com.flame.gongjiao.bean;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class LineBean {
         this.lineList = lineList;
     }
 
-    public static class LineListBean implements SearchSuggestion, Parcelable {
+    public static class LineListBean implements SearchSuggestion {
         /**
          * beginStation :
          * beginTime :
@@ -60,6 +59,7 @@ public class LineBean {
         private String sxx;
         private String upDown;
         private String upDownName;
+        private boolean isHistory;
 
 
         @Override
@@ -219,6 +219,15 @@ public class LineBean {
             this.upDownName = upDownName;
         }
 
+        public boolean isHistory() {
+            return isHistory;
+        }
+
+        public void setHistory(boolean history) {
+            isHistory = history;
+        }
+
+
         @Override
         public int describeContents() {
             return 0;
@@ -245,6 +254,7 @@ public class LineBean {
             dest.writeString(this.sxx);
             dest.writeString(this.upDown);
             dest.writeString(this.upDownName);
+            dest.writeByte(this.isHistory ? (byte) 1 : (byte) 0);
         }
 
         public LineListBean() {
@@ -270,9 +280,10 @@ public class LineBean {
             this.sxx = in.readString();
             this.upDown = in.readString();
             this.upDownName = in.readString();
+            this.isHistory = in.readByte() != 0;
         }
 
-        public static final Parcelable.Creator<LineListBean> CREATOR = new Parcelable.Creator<LineListBean>() {
+        public static final Creator<LineListBean> CREATOR = new Creator<LineListBean>() {
             @Override
             public LineListBean createFromParcel(Parcel source) {
                 return new LineListBean(source);

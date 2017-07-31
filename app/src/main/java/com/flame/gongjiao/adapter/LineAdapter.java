@@ -54,13 +54,8 @@ public class LineAdapter extends RecyclerView.Adapter<LineAdapter.ViewHolder> {
         @OnClick(R.id.line_card)
         void startLinePage(View v) {
             int position = this.getAdapterPosition();
-            Intent intent = new Intent(v.getContext(), LineActivity.class);
-            intent.putExtra("lineName", list.get(position).getLineName());
-            intent.putExtra("lineCode", list.get(position).getLineCode());
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    (Activity) v.getContext(), lineName, "Title"
-            );
-            ActivityCompat.startActivity(v.getContext(), intent,options.toBundle());
+            LineActivity.StartUp(v.getContext(), lineName,
+                    list.get(position).getLineName(), list.get(position).getLineCode());
         }
     }
 }
